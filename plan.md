@@ -13,7 +13,7 @@ Constraints:
 
 ## Layer 1: Models
 
-### Step 1 — Blog & Comment Models `[pending]`
+### Step 1 — Blog & Comment Models `[done]`
 
 **Tasks:**
 - In `blog/models.py`, define:
