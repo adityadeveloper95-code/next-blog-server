@@ -89,7 +89,7 @@ After this split, add all new service logic to domain-specific files under `app/
 
 ---
 
-### Step 4 — Blog Services `[pending]`
+### Step 4 — Blog Services `[done]`
 
 Add to `app/blog/services/blog_service.py`:
 
@@ -120,7 +120,7 @@ Import `ConflictError`, `NotFoundError`, and `ForbiddenError` from `app/blog/ser
 
 ---
 
-### Step 5 — Comment Services `[pending]`
+### Step 5 — Comment Services `[done]`
 
 Add to `app/blog/services/comment_service.py`:
 
@@ -146,7 +146,7 @@ Import `NotFoundError` and `ForbiddenError` from `app/blog/services/exceptions.p
 
 ---
 
-### Step 6 — Health Service `[pending]`
+### Step 6 — Health Service `[done]`
 
 Add to `app/blog/services/health_service.py`:
 
@@ -166,7 +166,7 @@ Add to `app/blog/services/health_service.py`:
 
 Serializers handle input validation and output shaping only. No business logic here.
 
-### Step 7 — All Serializers `[pending]`
+### Step 7 — All Serializers `[done]`
 
 Create `app/blog/serializers.py`:
 
@@ -211,7 +211,7 @@ Create `app/blog/serializers.py`:
 Class-based views using DRF. Views validate input (via serializers), call services, and format output. Permission classes enforce auth.
 Import service functions/exceptions from `app/blog/services/__init__.py` exports (backed by split files under `app/blog/services/`).
 
-### Step 8 — Health View `[pending]`
+### Step 8 — Health View `[done]`
 
 In `app/blog/views.py`:
 
@@ -221,7 +221,7 @@ In `app/blog/views.py`:
 
 ---
 
-### Step 9 — User Views `[pending]`
+### Step 9 — User Views `[done]`
 
 In `app/blog/views.py`:
 
@@ -246,7 +246,7 @@ In `app/blog/views.py`:
 
 ---
 
-### Step 10 — Blog Views `[pending]`
+### Step 10 — Blog Views `[done]`
 
 In `app/blog/views.py`:
 
@@ -270,7 +270,7 @@ In `app/blog/views.py`:
 
 ---
 
-### Step 11 — Comment Views `[pending]`
+### Step 11 — Comment Views `[done]`
 
 In `app/blog/views.py`:
 
@@ -290,7 +290,7 @@ In `app/blog/views.py`:
 
 ---
 
-### Step 12 — Feed View `[pending]`
+### Step 12 — Feed View `[done]`
 
 In `app/blog/views.py`:
 
@@ -303,7 +303,7 @@ In `app/blog/views.py`:
 
 ## Layer 5: URL Wiring
 
-### Step 13 — URL Configuration `[pending]`
+### Step 13 — URL Configuration `[done]`
 
 Update `app/blog/urls.py` to wire all routes:
 
@@ -332,7 +332,7 @@ DELETE /api/blog/<int:blog_pk>/comment/<int:pk>     → CommentUpdateDeleteView
 
 ## Layer 6: Tests
 
-### Step 14 — High-Level API Tests `[pending]`
+### Step 14 — High-Level API Tests `[done]`
 
 Integration-style tests using DRF's `APIClient` against the full stack. All tests live in `app/blog/tests/`.
 
