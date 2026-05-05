@@ -43,6 +43,7 @@ Constraints:
 ---
 
 ## Layer 2: Services
+### Step 2 — User Services `[done]`
 
 Services contain all business logic. Views must not query the ORM directly.
 
@@ -51,7 +52,6 @@ Define shared service exceptions at the top of `app/blog/services.py`:
 - `class NotFoundError(Exception): pass`
 - `class ForbiddenError(Exception): pass`
 
-### Step 2 — User Services `[pending]`
 
 Add to `app/blog/services.py`:
 
@@ -66,9 +66,32 @@ Add to `app/blog/services.py`:
 
 ---
 
-### Step 3 — Blog Services `[pending]`
+### Step 3 — Service Split: Exceptions + User Service `[pending]`
 
-Add to `app/blog/services.py`:
+Split the existing `app/blog/services.py` implementation from Step 2 into dedicated files:
+
+- Create `app/blog/services/exceptions.py` with:
+  - `class ConflictError(Exception): pass`
+  - `class NotFoundError(Exception): pass`
+  - `class ForbiddenError(Exception): pass`
+- Create `app/blog/services/user_service.py` with:
+  - `create_user(name, username, password) -> User` (same behavior as Step 2)
+- Create `app/blog/services/__init__.py` and export:
+  - `ConflictError`, `NotFoundError`, `ForbiddenError`
+  - `create_user`
+
+After this split, add all new service logic to domain-specific files under `app/blog/services/`.
+
+**Files to create/edit:**
+- `app/blog/services/exceptions.py`
+- `app/blog/services/user_service.py`
+- `app/blog/services/__init__.py`
+
+---
+
+### Step 4 — Blog Services `[pending]`
+
+Add to `app/blog/services/blog_service.py`:
 
 - `create_blog(user, title, slug, content) -> Blog`
   - Check slug uniqueness; raise `ConflictError` if taken.
@@ -89,11 +112,17 @@ Add to `app/blog/services.py`:
   - Order by `-created_at`; annotate each blog with `comment_count` via `Count("comments")`.
   - Raise `ValueError` for `page < 1`.
 
+Import `ConflictError`, `NotFoundError`, and `ForbiddenError` from `app/blog/services/exceptions.py`.
+
+**Files to create/edit:**
+- `app/blog/services/blog_service.py`
+- `app/blog/services/__init__.py`
+
 ---
 
-### Step 4 — Comment Services `[pending]`
+### Step 5 — Comment Services `[pending]`
 
-Add to `app/blog/services.py`:
+Add to `app/blog/services/comment_service.py`:
 
 - `create_comment(blog_id, user, content) -> Comment`
   - Fetch blog; raise `NotFoundError` if blog missing.
@@ -109,11 +138,17 @@ Add to `app/blog/services.py`:
   - Check ownership; raise `ForbiddenError` if not owner.
   - Hard delete.
 
+Import `NotFoundError` and `ForbiddenError` from `app/blog/services/exceptions.py`.
+
+**Files to create/edit:**
+- `app/blog/services/comment_service.py`
+- `app/blog/services/__init__.py`
+
 ---
 
-### Step 5 — Health Service `[pending]`
+### Step 6 — Health Service `[pending]`
 
-Add to `app/blog/services.py`:
+Add to `app/blog/services/health_service.py`:
 
 - `check_health() -> dict`
   - Run `SELECT 1` via `connection.cursor()`; mark `database: "ok"` or `"error"`.
@@ -121,13 +156,17 @@ Add to `app/blog/services.py`:
   - Return `{status: "ok"|"unavailable", database: ..., redis: ...}`.
   - Set overall `status` to `"unavailable"` if either check fails.
 
+**Files to create/edit:**
+- `app/blog/services/health_service.py`
+- `app/blog/services/__init__.py`
+
 ---
 
 ## Layer 3: Serializers
 
 Serializers handle input validation and output shaping only. No business logic here.
 
-### Step 6 — All Serializers `[pending]`
+### Step 7 — All Serializers `[pending]`
 
 Create `app/blog/serializers.py`:
 
@@ -170,8 +209,9 @@ Create `app/blog/serializers.py`:
 ## Layer 4: Views
 
 Class-based views using DRF. Views validate input (via serializers), call services, and format output. Permission classes enforce auth.
+Import service functions/exceptions from `app/blog/services/__init__.py` exports (backed by split files under `app/blog/services/`).
 
-### Step 7 — Health View `[pending]`
+### Step 8 — Health View `[pending]`
 
 In `app/blog/views.py`:
 
@@ -181,7 +221,7 @@ In `app/blog/views.py`:
 
 ---
 
-### Step 8 — User Views `[pending]`
+### Step 9 — User Views `[pending]`
 
 In `app/blog/views.py`:
 
@@ -206,7 +246,7 @@ In `app/blog/views.py`:
 
 ---
 
-### Step 9 — Blog Views `[pending]`
+### Step 10 — Blog Views `[pending]`
 
 In `app/blog/views.py`:
 
@@ -230,7 +270,7 @@ In `app/blog/views.py`:
 
 ---
 
-### Step 10 — Comment Views `[pending]`
+### Step 11 — Comment Views `[pending]`
 
 In `app/blog/views.py`:
 
@@ -250,7 +290,7 @@ In `app/blog/views.py`:
 
 ---
 
-### Step 11 — Feed View `[pending]`
+### Step 12 — Feed View `[pending]`
 
 In `app/blog/views.py`:
 
@@ -263,7 +303,7 @@ In `app/blog/views.py`:
 
 ## Layer 5: URL Wiring
 
-### Step 12 — URL Configuration `[pending]`
+### Step 13 — URL Configuration `[pending]`
 
 Update `app/blog/urls.py` to wire all routes:
 
@@ -292,7 +332,7 @@ DELETE /api/blog/<int:blog_pk>/comment/<int:pk>     → CommentUpdateDeleteView
 
 ## Layer 6: Tests
 
-### Step 13 — High-Level API Tests `[pending]`
+### Step 14 — High-Level API Tests `[pending]`
 
 Integration-style tests using DRF's `APIClient` against the full stack. All tests live in `app/blog/tests/`.
 
