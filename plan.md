@@ -66,7 +66,7 @@ Add to `app/blog/services.py`:
 
 ---
 
-### Step 3 — Service Split: Exceptions + User Service `[pending]`
+### Step 3 — Service Split: Exceptions + User Service `[done]`
 
 Split the existing `app/blog/services.py` implementation from Step 2 into dedicated files:
 
