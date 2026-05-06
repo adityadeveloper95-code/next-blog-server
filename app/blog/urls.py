@@ -1,74 +1,59 @@
 from django.urls import path
-from django.http import HttpResponseNotAllowed
 
 from .views import (
-    BlogCreateView,
+    BlogByIdView,
     BlogDetailView,
-    BlogUpdateDeleteView,
+    BlogView,
     CommentCreateView,
     CommentUpdateDeleteView,
     FeedView,
     HealthView,
     LoginView,
     LogoutView,
-    UserCreateView,
-    UserDetailView,
+    UserView,
 )
-
-
-def map_methods(method_to_view):
-    """Dispatch a URL to different APIViews by HTTP method."""
-    prepared = {method.upper(): view.as_view() for method, view in method_to_view.items()}
-
-    def routed_view(request, *args, **kwargs):
-        view = prepared.get(request.method.upper())
-        if view is None:
-            return HttpResponseNotAllowed(list(prepared.keys()))
-        return view(request, *args, **kwargs)
-
-    return routed_view
 
 
 urlpatterns = [
     path(
         "health",
-        map_methods({"GET": HealthView}),
+        HealthView.as_view(),
         name="health",
     ),
     path(
         "user",
-        map_methods({"POST": UserCreateView, "GET": UserDetailView}),
+        UserView.as_view(),
         name="user",
     ),
     path(
         "login",
-        map_methods({"POST": LoginView}),
+        LoginView.as_view(),
         name="login",
     ),
     path(
         "logout",
-        map_methods({"POST": LogoutView}),
+        LogoutView.as_view(),
         name="logout",
     ),
     path(
         "feed",
-        map_methods({"GET": FeedView}),
+        FeedView.as_view(),
         name="feed",
     ),
     path(
         "blog",
-        map_methods({"POST": BlogCreateView}),
+        BlogView.as_view(),
         name="blog",
     ),
     # Keep int route before slug route so numeric ids don't get captured by slug path.
     path(
         "blog/<int:pk>",
-        map_methods({"PUT": BlogUpdateDeleteView, "DELETE": BlogUpdateDeleteView}),
+        BlogByIdView.as_view(),
         name="blog-update-delete",
     ),
     path(
         "blog/<slug:slug>",
-        map_methods({"GET": BlogDetailView}),
+        BlogDetailView.as_view(),
         name="blog-detail",
     ),
     path("blog/<int:blog_pk>/comment", CommentCreateView.as_view(), name="comment-create"),

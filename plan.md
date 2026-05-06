@@ -398,3 +398,45 @@ Integration-style tests using DRF's `APIClient` against the full stack. All test
 - `app/blog/tests/test_blog.py`
 - `app/blog/tests/test_comment.py`
 - `app/blog/tests/test_feed.py`
+
+---
+
+## Layer 7: Routing Refactor
+
+### Step 15 — DRF-Native Method Dispatch `[done]`
+
+Refactor routing so each URL pattern maps directly to a DRF view (`.as_view()`) and let DRF handle method dispatch/405 responses natively.
+
+In `app/blog/views.py`:
+
+- Add `UserView(APIView)` that combines:
+  - `POST /api/user` (registration behavior from `UserCreateView`)
+  - `GET /api/user` (current-user behavior from `UserDetailView`)
+  - Method-specific permissions via `get_permissions()`:
+    - `POST` => `AllowAny`
+    - `GET` => `IsAuthenticated`
+- Replace split blog write/update-delete classes with route-oriented names:
+  - `BlogView(APIView)` for `POST /api/blog`
+  - `BlogByIdView(APIView)` for `PUT/DELETE /api/blog/<int:pk>`
+- Keep existing single-route views unchanged (`HealthView`, `LoginView`, `LogoutView`, `FeedView`, `BlogDetailView`, comment views).
+
+In `app/blog/urls.py`:
+
+- Remove custom `map_methods(...)` helper and `HttpResponseNotAllowed` import.
+- Route directly with `.as_view()` for each endpoint:
+  - `/api/user` -> `UserView`
+  - `/api/blog` -> `BlogView`
+  - `/api/blog/<int:pk>` -> `BlogByIdView`
+  - Other routes remain direct `APIView` mappings.
+
+Validation:
+
+- Lint edited files (`app/blog/views.py`, `app/blog/urls.py`) with no errors.
+- Confirm no runtime references remain to `map_methods`.
+- Run tests via Django test command:
+  - `uv run python app/manage.py test --settings=app.settings.test`
+  - Current project state reports `0` discovered tests and exits cleanly.
+
+**Files to create/edit:**
+- `app/blog/views.py`
+- `app/blog/urls.py`

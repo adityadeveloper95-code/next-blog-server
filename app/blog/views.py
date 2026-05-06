@@ -50,8 +50,13 @@ class HealthView(APIView):
         return Response(health, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 
-class UserCreateView(APIView):
-    permission_classes = [AllowAny]
+class UserView(APIView):
+    def get_permissions(self):
+        if self.request.method.upper() == "POST":
+            return [AllowAny()]
+        if self.request.method.upper() == "GET":
+            return [IsAuthenticated()]
+        return super().get_permissions()
 
     def post(self, request):
         serializer = UserCreateSerializer(data=request.data)
@@ -70,10 +75,6 @@ class UserCreateView(APIView):
             UserOutputSerializer(user).data,
             status=status.HTTP_201_CREATED,
         )
-
-
-class UserDetailView(APIView):
-    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         return Response(UserOutputSerializer(request.user).data, status=status.HTTP_200_OK)
@@ -109,7 +110,7 @@ class LogoutView(APIView):
         return Response({"message": "Logout successful."}, status=status.HTTP_200_OK)
 
 
-class BlogCreateView(APIView):
+class BlogView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -163,7 +164,7 @@ class FeedView(APIView):
         return Response(FeedOutputSerializer(data).data, status=status.HTTP_200_OK)
 
 
-class BlogUpdateDeleteView(APIView):
+class BlogByIdView(APIView):
     permission_classes = [IsAuthenticated]
 
     def put(self, request, pk):
