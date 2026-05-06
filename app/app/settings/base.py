@@ -88,7 +88,7 @@ SESSION_CACHE_ALIAS = "default"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication",
+        "app.authentication.SessionAuthentication401",
     ],
 }
 

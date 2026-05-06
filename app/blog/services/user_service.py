@@ -1,9 +1,11 @@
 import re
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 
 from .exceptions import ConflictError
+
+User = get_user_model()
 
 USERNAME_REGEX = re.compile(r"^[a-z0-9]{3,30}$")
 
